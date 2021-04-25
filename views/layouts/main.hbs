@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Management</title>
+  <style>
+    body {
+      padding: 10px;
+    }
+
+    input {
+      margin-bottom: 20px;
+    }
+
+    #contentContainer {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>File list:</h2>
+  <button type="button" onclick="refreshList()">Refresh</button>
+  {{{body}}}
+  <script>
+    const refreshList = () => {
+      let xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", '/', true);
+      xmlHttp.send(null);
+    }
+
+    const showContent = (fileName) => {
+      const data = { fileName: fileName }
+
+      console.log(data)
+
+      fetch('/content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(result => {
+        document.getElementById('contentContainer').innerText = result.content;
+      })
+      .catch(error => {
+        console.log(`Error: ${error}`);
+      });
+    }
+  </script>
+</body>
+
+</html>
