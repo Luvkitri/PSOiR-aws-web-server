@@ -1,0 +1,26 @@
+{
+  "name": "psoir-aws-web-server",
+  "version": "1.0.0",
+  "description": "Web server for sending user requests to SQS",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app",
+    "dev": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luvkitri/PSOiR-aws-web-server.git"
+  },
+  "author": "Jan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Luvkitri/PSOiR-aws-web-server/issues"
+  },
+  "homepage": "https://github.com/Luvkitri/PSOiR-aws-web-server#readme",
+  "dependencies": {
+    "aws-sdk": "^2.889.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.0"
+  }
+}
