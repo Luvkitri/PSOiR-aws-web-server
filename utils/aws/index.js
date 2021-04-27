@@ -29,7 +29,18 @@ const fetchFilesFromS3 = async () => {
   return data.Contents;
 };
 
-const sendToQueue = async (files) => {
+const createMessage = (fileName, index) => {
+  return message = {
+    Id: String(index),
+    DelaySeconds: 10,
+    MessageAttributes: {},
+    MessageBody: fileName,
+  }
+}
+
+const sendMessagesToQueue = async (messages) => {
+  console.log(messages)
+
   // Create SQS service object
   const sqs = new AWS.SQS({
     apiVersion: '2012-11-05',
@@ -40,8 +51,8 @@ const sendToQueue = async (files) => {
   let batch = [];
   let count = 0;
 
-  files.forEach((file) => {
-    batch.push(file);
+  messages.forEach((message) => {
+    batch.push(message);
     count++;
 
     if (count == 10) {
@@ -64,6 +75,8 @@ const sendToQueue = async (files) => {
       }
       console.log(`Msg send succesfully: ${data}`);
     });
+    console.log('hello?');
+    console.log(result);
   });
 };
 
@@ -90,4 +103,6 @@ const fetchFileFromS3 = async (fileName) => {
 module.exports = {
   fetchFilesFromS3: fetchFilesFromS3,
   fetchFileFromS3: fetchFileFromS3,
+  sendMessagesToQueue: sendMessagesToQueue,
+  createMessage: createMessage,
 };
