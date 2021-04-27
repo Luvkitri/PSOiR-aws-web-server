@@ -1,4 +1,4 @@
-<form method="POST" action="/files" style="padding: 10px;">
+<form method="POST" action="/files">
   {{#each files}}
   <input id="file{{@index}}" type="checkbox" name="file{{@index}}" value="{{this.Key}}">
   <label for="file{{@index}}">{{this.Key}}</label>

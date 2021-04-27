@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>File Management</title>
   <style>
-    body {
+    body, form {
       padding: 10px;
     }
 
@@ -26,31 +26,42 @@
   <button type="button" onclick="refreshList()">Refresh</button>
   {{{body}}}
   <script>
-    const refreshList = () => {
-      let xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("GET", '/', true);
-      xmlHttp.send(null);
+    const refreshList = async () => {
+      try {
+        const response = await fetch('/', { method: 'GET' });
+
+        if (!response.ok) {
+          const message = `An error has occured: ${response.status}`;
+          throw new Error(message);
+        }
+      } catch (error) {
+        console.log(`Error ${error}`)
+      }
     }
 
-    const showContent = (fileName) => {
+    const showContent = async (fileName) => {
       const data = { fileName: fileName }
 
-      console.log(data)
+      try {
+        const response = await fetch('/content', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
 
-      fetch('/content', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(result => {
+        if (!response.ok) {
+          const message = `An error has occured: ${response.status}`;
+          throw new Error(message);
+        }
+
+        result = await response.json();
+
         document.getElementById('contentContainer').innerText = result.content;
-      })
-      .catch(error => {
+      } catch (error) {
         console.log(`Error: ${error}`);
-      });
+      }
     }
   </script>
 </body>
