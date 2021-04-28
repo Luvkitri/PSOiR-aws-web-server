@@ -30,16 +30,16 @@ const fetchFilesFromS3 = async () => {
 };
 
 const createMessage = (fileName, index) => {
-  return message = {
+  return {
     Id: String(index),
     DelaySeconds: 10,
     MessageAttributes: {},
     MessageBody: fileName,
-  }
-}
+  };
+};
 
 const sendMessagesToQueue = async (messages) => {
-  console.log(messages)
+  console.log(messages);
 
   // Create SQS service object
   const sqs = new AWS.SQS({
@@ -75,8 +75,6 @@ const sendMessagesToQueue = async (messages) => {
       }
       console.log(`Msg send succesfully: ${data}`);
     });
-    console.log('hello?');
-    console.log(result);
   });
 };
 
