@@ -39,8 +39,6 @@ const createMessage = (fileName, index) => {
 };
 
 const sendMessagesToQueue = async (messages) => {
-  console.log(messages);
-
   // Create SQS service object
   const sqs = new AWS.SQS({
     apiVersion: '2012-11-05',
@@ -51,11 +49,12 @@ const sendMessagesToQueue = async (messages) => {
   let batch = [];
   let count = 0;
 
-  messages.forEach((message) => {
+  messages.forEach((message, index, array) => {
     batch.push(message);
     count++;
 
-    if (count == 10) {
+    if (count === 10 || index === array.length - 1) {
+      console.log('?');
       batches.push(batch);
       batch = [];
       count = 0;
@@ -66,7 +65,7 @@ const sendMessagesToQueue = async (messages) => {
   batches.forEach((batch) => {
     const sqsParams = {
       Entries: batch,
-      QueueURL: process.env.SQS_URL,
+      QueueUrl: process.env.SQS_URL,
     };
 
     sqs.sendMessageBatch(sqsParams, (err, data) => {
