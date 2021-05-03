@@ -19,14 +19,16 @@ router.get('/', async (req, res) => {
 
 router.post('/files', async (req, res) => {
   try {
-    let files = Object.values(req.body);
-    const messages = files.map(createMessage)
-    await sendMessagesToQueue(messages)
-    res.status(200);
+    let files = req.body.selectedInputs;
+    const messages = files.map(createMessage);
+    const results = await sendMessagesToQueue(messages);
+
+    res.json({
+      numOfMessagesSent: results.length,
+    });
   } catch (error) {
     console.log(error);
   }
-  
 });
 
 router.post('/content', async (req, res) => {
