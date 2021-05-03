@@ -54,27 +54,34 @@ const sendMessagesToQueue = async (messages) => {
     count++;
 
     if (count === 10 || index === array.length - 1) {
-      console.log('?');
       batches.push(batch);
       batch = [];
       count = 0;
     }
   });
 
+  let results = [];
+
   // Send batches to queue
-  batches.forEach((batch) => {
+  for (const batch of batches) {
     const sqsParams = {
       Entries: batch,
       QueueUrl: process.env.SQS_URL,
     };
 
-    sqs.sendMessageBatch(sqsParams, (err, data) => {
-      if (err) {
-        console.error('Error', err);
+    try {
+      const result = await sqs.sendMessageBatch(sqsParams).promise();
+      
+      for (const successfulMsgs of result.Successful) {
+        results.push(successfulMsgs);
       }
-      console.log(`Msg send succesfully: ${data}`);
-    });
-  });
+      
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  return results;
 };
 
 const fetchFileFromS3 = async (fileName) => {
