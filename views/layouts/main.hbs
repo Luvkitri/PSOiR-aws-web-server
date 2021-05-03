@@ -7,7 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>File Management</title>
   <style>
-    body, form {
+    body,
+    form {
       padding: 10px;
     }
 
@@ -61,6 +62,41 @@
         document.getElementById('contentContainer').innerText = result.content;
       } catch (error) {
         console.log(`Error: ${error}`);
+      }
+    }
+
+    const sendFilesToQueue = async (event) => {
+      event.preventDefault();
+      
+      const selectedInputs = Array.from(
+        document.querySelectorAll("input[type=checkbox]:checked")
+      ).map(e => e.value);
+
+      if (selectedInputs.length === 0) {
+        return false;
+      }
+
+      try {
+        const response = await fetch('/files', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ selectedInputs: selectedInputs })
+        });
+
+        if (!response.ok) {
+          const message = `An error has occured: ${response.status}`;
+          throw new Error(message);
+        }
+
+        result = await response.json();
+
+        document.getElementById('resultContainer').innerText = `Correctly send messages: ${result.numOfMessagesSent}`
+      } catch (error) {
+        console.log(`Error: ${error}`);
+      } finally {
+        return false;
       }
     }
   </script>

@@ -1,12 +1,15 @@
-<form method="POST" action="/files">
+<form id="filesForm" onsubmit="return sendFilesToQueue(event);">
   {{#each files}}
   <input id="file{{@index}}" type="checkbox" name="file{{@index}}" value="{{this.Key}}">
   <label for="file{{@index}}">{{this.Key}}</label>
-  <button id="button{{@index}}" type="button" onclick="showContent(this.value)" value="{{this.Key}}">Show contents</button>
+  <button id="button{{@index}}" type="button" onclick="showContent(this.value)" value="{{this.Key}}">Show
+    contents</button>
   <br>
   {{/each}}
   <br>
   <input type="submit" value="Do work">
 </form>
+<div id="resultContainer">
+</div>
 <div id="contentContainer">
 </div>
