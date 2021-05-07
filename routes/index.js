@@ -10,10 +10,10 @@ const {
 } = require('../utils/aws');
 
 router.get('/', async (req, res) => {
-  const data = await fetchFilesFromS3();
+  const files = await fetchFilesFromS3();
 
   res.render('list', {
-    files: data,
+    files: files,
   });
 });
 

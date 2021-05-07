@@ -24,9 +24,15 @@ const fetchFilesFromS3 = async () => {
     Bucket: process.env.BUCKET_NAME,
   };
 
+  // Get data from S3
   let data = await s3.listObjectsV2(bucketParams).promise();
 
-  return data.Contents;
+  // Filter items
+  let files = data.Contents.filter(
+    (file) => file.Key.charAt(file.Key.length - 1) !== '/'
+  );
+
+  return files;
 };
 
 const createMessage = (fileName, index) => {
@@ -71,13 +77,12 @@ const sendMessagesToQueue = async (messages) => {
 
     try {
       const result = await sqs.sendMessageBatch(sqsParams).promise();
-      
+
       for (const successfulMsgs of result.Successful) {
         results.push(successfulMsgs);
       }
-      
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   }
 
