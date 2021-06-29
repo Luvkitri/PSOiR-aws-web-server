@@ -19,7 +19,13 @@
     #contentContainer {
       border: 1px solid black;
     }
+
+    .formlabel {
+      display: block;
+      position: relative;
+    }
   </style>
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.935.0.min.js"></script>
 </head>
 
 <body>
@@ -27,6 +33,22 @@
   <button type="button" onclick="refreshList()">Refresh</button>
   {{{body}}}
   <script>
+    var bucketName = 'psior-task';
+    var bucketRegion = 'us-east-1';
+    var IdentityPoolId = 'us-east-1:6c6f1002-75c9-40bf-a330-55c88294c9f9';
+
+    AWS.config.update({
+      region: bucketRegion,
+      credentials: new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: IdentityPoolId
+      })
+    });
+
+    var s3 = new AWS.S3({
+      apiVersion: "2006-03-01",
+      params: { Bucket: bucketName }
+    });
+
     const refreshList = async () => {
       try {
         const response = await fetch('/', { method: 'GET' });
@@ -97,6 +119,32 @@
         console.log(`Error: ${error}`);
       } finally {
         return false;
+      }
+    }
+
+    const sendFileToS3 = async (event) => {
+      event.preventDefault();
+
+      let fileInput = document.getElementById("fileInput");
+      let file = fileInput.files[0];
+      let fileName = file.name;
+      
+      let bucketKey = 'not-edited/';
+      let fileKey =  bucketKey + fileName;
+
+      let upload = new AWS.S3.ManagedUpload({
+        params: {
+          Bucket: bucketName,
+          Key: fileKey,
+          Body: file,
+        }
+      });
+
+      try {
+        const data = await upload.promise();
+        alert('Successsfully uploaded file.');
+      } catch (error) {
+        alert(`Failed to upload a file to S3: ${error.message}`)
       }
     }
   </script>
