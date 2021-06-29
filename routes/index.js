@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const AWS = require('aws-sdk');
 
 const {
   fetchFilesFromS3,
@@ -23,11 +22,14 @@ router.post('/files', async (req, res) => {
     const messages = files.map(createMessage);
     const results = await sendMessagesToQueue(messages);
 
-    res.json({
-      numOfMessagesSent: results.length,
-    });
+    res
+      .json({
+        numOfMessagesSent: results.length,
+      })
+      .status(200);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.json({ error: error }).status(400);
   }
 });
 

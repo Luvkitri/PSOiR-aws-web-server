@@ -1,7 +1,6 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const dotenv = require('dotenv');
-const AWS = require('aws-sdk');
 const app = express();
 
 // Load env variables

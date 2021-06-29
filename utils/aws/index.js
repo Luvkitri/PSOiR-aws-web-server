@@ -7,7 +7,6 @@ AWS.config.update({
 
 AWS.config.getCredentials(function (err) {
   if (err) console.log(err.stack);
-  // credentials not loaded
   else {
     console.log('Access key:', AWS.config.credentials.accessKeyId);
   }
@@ -105,7 +104,7 @@ const fetchFileFromS3 = async (fileName) => {
     const data = await s3.getObject(bucketParams).promise();
     return data.Body.toString('utf-8');
   } catch (error) {
-    return 'Failed to retrive object';
+    return `Failed to retrive object: ${error.message}`;
   }
 };
 
